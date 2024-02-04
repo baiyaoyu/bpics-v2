@@ -14,8 +14,8 @@ func main() {
 	db.InitDB()
 	logger.InitLog()
 	handler.InitHandler()
-	logger.Debug(nil, "web服务已启动")
 	r.LoadHTMLGlob(config.TemplPath)
 	r.GET("/*name", handler.FileSystemHandler())
 	r.Run(config.GetServerAddr())
+	logger.Debug(nil, "web服务已启动")
 }
