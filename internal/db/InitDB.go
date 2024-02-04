@@ -1,12 +1,14 @@
 package db
 
 import (
+	"database/sql"
+
 	"github.com/baiyaoyu/bpics-v2/internal/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var DbPool *gorm.DB
+var DbPool *sql.DB
 
 func InitDB() {
 	db, err := gorm.Open(mysql.New(mysql.Config{
@@ -20,5 +22,12 @@ func InitDB() {
 	if err != nil {
 		panic(err)
 	}
-	DbPool = db
+	DbPool, err = db.DB()
+	if err != nil {
+		panic(err)
+	}
+	err = DbPool.Ping()
+	if err != nil {
+		panic(err)
+	}
 }
