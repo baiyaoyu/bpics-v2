@@ -17,7 +17,7 @@ bpics-v2 正如标题所展示的，这仅仅是一个个人网站项目（Just 
 
 ## 演示地址
 
-可以通过 http://192.168.1.88:8000/fs 这个地址查看演示效果
+可以通过 http://www.hiddencat.fun:8000/fs 这个地址查看演示效果
 
 ![image-20240204172502295](http://www.hiddencat.fun:8000/fs/file/image/%e6%95%88%e6%9e%9c%e6%bc%94%e7%a4%ba.jpg)
 
