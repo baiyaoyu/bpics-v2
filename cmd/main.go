@@ -10,7 +10,7 @@ import (
 
 func main() {
 	r := gin.Default()
-	config.InitConfig()
+	config.InitConfig("./config")
 	db.InitDB()
 	logger.InitLog()
 	handler.InitHandler()
