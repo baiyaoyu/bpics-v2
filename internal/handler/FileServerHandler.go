@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/baiyaoyu/bpics-v2/internal/biz/avator"
 	"github.com/baiyaoyu/bpics-v2/internal/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -29,10 +30,10 @@ func FileSystemHandler() func(ctx *gin.Context) {
 		// fmt.Println(path)
 		if JudgePath(filePath) {
 			files := ListDir(filePath)
-			// avatorPic := ava.GetOnePicByDate()
-			ctx.HTML(http.StatusOK, "filedir.html", gin.H{
-				"who":      "潜伏的喵星人",
-				"img":      "843053.jpg",
+			avatorPic := avator.FetchOneByDate()
+			ctx.HTML(http.StatusOK, "index.html", gin.H{
+				"who":      avatorPic.Who,
+				"img":      avatorPic.Path,
 				"pipeline": files,
 				"path":     filePath,
 			})

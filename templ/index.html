@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>一个无聊的个人网站</title>
+    <style>
+    .title {
+        background-color: #f7fff7;
+        margin:30px;
+        height: 200px;
+    }
+
+    #logo {
+        display: inline-block;
+
+        padding:8px;
+        width:40%;
+    }
+
+    #logo img{
+        width: 100px;
+        height: 100px;
+        padding:8px;
+        border:2px solid orange;
+        margin: 12px;
+     }
+
+    #links{
+        width:30%;
+        padding:8px;
+        float: right;
+     }
+
+    #links a{
+        border:2px dashed orange;
+        margin: 12px;
+    }
+
+    #nav-bar {
+        margin: 10px 0px 0px 20px;
+        height:60px;
+        background-color: skyblue;
+    }
+
+    #nav-bar .item{
+        margin: 0px 20px 0 20px;
+        border: 1px solid black;
+        padding: 19px;
+        height: 20px;
+        width: 60px;
+        display: inline-block;
+    }
+    #file-view {
+        width: 80%;
+        height: 200px;
+        margin: auto;
+    }
+    h1 {
+        margin: 0px 10px 10px 10px;
+        font-family: "Microsoft YaHei Light", cursive, serif, sans-serif;
+        font-size: 20px;
+    }
+    td {
+        text-align: center
+    }
+   
+</style>
+</head>
+<body>
+    <div class="title">
+        <marquee>欢迎来到{{.who}}的WebSite</marquee>
+
+        <div id="logo">
+            <img src="{{.img}}"/>
+            <h1>{{.who}}的文件小站</h1>
+        </div>
+        <div id="links"> 
+            <a href="http://www.hiddencat.fun:8000">友情链接1</a>
+            <a>友情链接2</a>
+            <a>友情链接3</a>
+        </div>
+        <div id = "file-view">
+            <p>当前目录:{{.path}}</p>
+            <table>
+                <tr><td width=300px>文件名</td><td width=200px>目录/文件</td><td width=200px>修改时间</td><td  width=200px>大小(bytes)</td></tr>
+                {{range $k,$v := .pipeline}} <tr><td width=300px><a href="{{$v.Href}}">{{$v.Href}}</a></td><td width=200px>{{$v.IsDir}}</td><td width=200px>{{$v.ModifyTime}}</td><td  width=200px>{{$v.Size}}</td></tr>{{end}}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -11,4 +11,4 @@ log:
 data:
   path: /opt/src/go/baipics-v2/data
 
-templ: /opt/src/go/baipics-v2/templates/*
+templ: ./templ/*
