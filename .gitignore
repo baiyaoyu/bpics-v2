@@ -19,3 +19,5 @@
 
 # Go workspace file
 go.work
+# 项目日志
+logs/*
