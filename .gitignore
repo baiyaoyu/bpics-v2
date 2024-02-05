@@ -21,3 +21,5 @@
 go.work
 # 项目日志
 logs/*
+
+__debug_*
