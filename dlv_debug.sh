@@ -12,6 +12,10 @@ echo "查询到go运行的pid为$propid"
 if [ -n "$propid" ]; then
   kill -9 $propid
 fi
+if [ "$1" == "clear" ];then
+  echo 'Delete debug file'
+  rm -rf __debug*
+fi
 if [ "$1" == "start" ];then
   echo 'Start a new Debug'
   dlv debug ./cmd/main.go --headless --listen=:2345 --api-version=2 --accept-multiclient &
