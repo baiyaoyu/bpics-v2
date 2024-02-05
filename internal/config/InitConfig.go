@@ -3,6 +3,10 @@ package config
 import (
 	"fmt"
 
+	"github.com/baiyaoyu/bpics-v2/internal/db"
+	"github.com/baiyaoyu/bpics-v2/internal/handler"
+	"github.com/baiyaoyu/bpics-v2/internal/logger"
+	"github.com/baiyaoyu/bpics-v2/internal/server"
 	"github.com/spf13/viper"
 )
 
@@ -29,6 +33,12 @@ func InitConfig(Path string) {
 	Port = viper.GetInt("server.port")
 	Ip = viper.GetString("server.ip")
 	TemplPath = viper.GetString("templ")
+}
+func InitOther() {
+	db.InitDB(DSN)
+	logger.InitLog(Logpath)
+	handler.InitHandler(DataPath)
+	server.InitEngine(TemplPath)
 }
 
 func GetServerAddr() string {

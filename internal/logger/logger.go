@@ -5,12 +5,13 @@ import (
 	"os"
 	"path"
 
-	"github.com/baiyaoyu/bpics-v2/internal/config"
 	"github.com/sirupsen/logrus"
 )
 
-func InitLog() {
+var Logpath string
 
+func InitLog(Path string) {
+	Logpath = Path
 }
 
 func Debug(fields logrus.Fields, args ...interface{}) {
@@ -42,10 +43,10 @@ func Trace(fields logrus.Fields, args ...interface{}) {
 	logrus.WithFields(fields).Trace(args)
 }
 func setOutPutFile(level logrus.Level) {
-	if _, err := os.Stat(config.Logpath); os.IsNotExist(err) {
-		err = os.MkdirAll(config.Logpath, 0777)
+	if _, err := os.Stat(Logpath); os.IsNotExist(err) {
+		err = os.MkdirAll(Logpath, 0777)
 		if err != nil {
-			panic(fmt.Errorf("create log dir '%s' error: %s", config.Logpath, err))
+			panic(fmt.Errorf("create log dir '%s' error: %s", Logpath, err))
 		}
 	}
 	name := ""
@@ -67,7 +68,7 @@ func setOutPutFile(level logrus.Level) {
 	default:
 		panic(fmt.Errorf("invaild log level error %d", logrus.ErrorLevel))
 	}
-	fileName := path.Join(config.Logpath, name+".log")
+	fileName := path.Join(Logpath, name+".log")
 	var err error
 	os.Stderr, err = os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {

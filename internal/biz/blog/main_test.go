@@ -5,12 +5,11 @@ import (
 	"testing"
 
 	"github.com/baiyaoyu/bpics-v2/internal/config"
-	"github.com/baiyaoyu/bpics-v2/internal/db"
 	_ "github.com/lib/pq"
 )
 
 func TestMain(m *testing.M) {
 	config.InitConfig("../../../config")
-	db.InitDB()
+	config.InitOther()
 	os.Exit(m.Run())
 }
