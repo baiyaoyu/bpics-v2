@@ -46,7 +46,6 @@ func FileSystemHandler() func(ctx *gin.Context) {
 func JudgePath(path string) bool {
 	file, _ := RootPath.Open(path)
 	info, _ := file.Stat()
-
 	return info.IsDir()
 }
 
