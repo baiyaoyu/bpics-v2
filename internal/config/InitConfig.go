@@ -34,6 +34,7 @@ func InitConfig(Path string) {
 	Ip = viper.GetString("server.ip")
 	TemplPath = viper.GetString("templ")
 }
+
 func InitOther() {
 	db.InitDB(DSN)
 	logger.InitLog(Logpath)
