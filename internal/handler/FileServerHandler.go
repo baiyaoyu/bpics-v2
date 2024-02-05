@@ -6,9 +6,15 @@ import (
 	"time"
 
 	"github.com/baiyaoyu/bpics-v2/internal/biz/avator"
+	"github.com/baiyaoyu/bpics-v2/internal/config"
 	"github.com/baiyaoyu/bpics-v2/internal/logger"
 	"github.com/gin-gonic/gin"
 )
+
+type FsHandler struct {
+	fsHandler http.Handler
+	rootPath  http.Dir
+}
 
 type Item struct {
 	Name       string `json:"name"`       // 目录或文件的名称
@@ -18,18 +24,28 @@ type Item struct {
 	Href       string `json:"href"`
 }
 
-var RootPath http.Dir
-var RootSystem http.FileSystem
-var FsHandler http.Handler
+type FileReq struct {
+	Path string `json:"path"`
+	Op   string `json:"op"` // list download view upload
+}
 
-func FileSystemHandler() func(ctx *gin.Context) {
+func NewFsHandler() FsHandler {
+	path := http.Dir(config.DataPath)
+	return FsHandler{
+		rootPath:  path,
+		fsHandler: http.Handler(http.StripPrefix("/", http.FileServer(path))),
+	}
+}
+
+// 模板处理使用
+func (handler *FsHandler) FileSystemHandler() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		path := ctx.Request.RequestURI
 		// 转义后可支持中文路径的文件
 		filePath, _ := url.QueryUnescape(path)
 		// fmt.Println(path)
-		if JudgePath(filePath) {
-			files := ListDir(filePath)
+		if handler.judgePath(filePath) {
+			files := handler.listDir(filePath)
 			avatorPic := avator.FetchOneByDate()
 			ctx.HTML(http.StatusOK, "index.html", gin.H{
 				"who":      avatorPic.Who,
@@ -38,19 +54,36 @@ func FileSystemHandler() func(ctx *gin.Context) {
 				"path":     filePath,
 			})
 		} else {
-			FsHandler.ServeHTTP(ctx.Writer, ctx.Request)
+			handler.fsHandler.ServeHTTP(ctx.Writer, ctx.Request)
 		}
 	}
 }
 
-func JudgePath(path string) bool {
-	file, _ := RootPath.Open(path)
+// 前后端分离架构使用
+func (handler *FsHandler) FileJsonHandler() func(ctx *gin.Context) {
+	return func(ctx *gin.Context) {
+		var req FileReq
+		ctx.ShouldBindJSON(&req)
+		path := req.Path
+		// op := req.Op
+		// filePath, _ := url.QueryUnescape(req.Path)
+		if handler.judgePath(path) {
+			files := handler.listDir(req.Path)
+			ctx.JSON(200, files)
+		} else {
+			handler.innerServe(ctx.Writer, ctx.Request, path)
+		}
+	}
+}
+
+func (handler *FsHandler) judgePath(path string) bool {
+	file, _ := handler.rootPath.Open(path)
 	info, _ := file.Stat()
 	return info.IsDir()
 }
 
-func ListDir(path string) []Item {
-	file, _ := RootPath.Open(path)
+func (handler *FsHandler) listDir(path string) []Item {
+	file, _ := handler.rootPath.Open(path)
 	fss, err := file.Readdir(-1)
 	if err != nil {
 		logger.Error(nil, err)
@@ -78,7 +111,7 @@ func ListDir(path string) []Item {
 	return items
 }
 
-func InnerServe(w http.ResponseWriter, r *http.Request, name string) {
-	file, _ := RootPath.Open(name)
+func (handler *FsHandler) innerServe(w http.ResponseWriter, r *http.Request, name string) {
+	file, _ := handler.rootPath.Open(name)
 	http.ServeContent(w, r, name, time.Now(), file)
 }

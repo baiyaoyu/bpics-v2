@@ -9,6 +9,7 @@ import (
 func main() {
 	config.InitConfig("./config")
 	config.InitOther()
+	server.InitEngine(config.TemplPath)
 	Addr := config.GetServerAddr()
 	logger.Debug(nil, "web即将启动")
 	server.Default.Run(Addr)
