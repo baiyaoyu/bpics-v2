@@ -1,13 +1,13 @@
 package db
 
 import (
-	"database/sql"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var DbPool *sql.DB
+var DbPool *gorm.DB
 
 func InitDB(DSN string) {
 	db, err := gorm.Open(mysql.New(mysql.Config{
@@ -21,12 +21,15 @@ func InitDB(DSN string) {
 	if err != nil {
 		panic(err)
 	}
-	DbPool, err = db.DB()
-	if err != nil {
-		panic(err)
-	}
-	err = DbPool.Ping()
-	if err != nil {
-		panic(err)
-	}
+	DbPool = db
+	SetConns()
+}
+
+func SetConns() {
+	sqlDB, _ := DbPool.DB()
+	sqlDB.SetMaxIdleConns(10)
+	//设置打开数据库连接的最大数量
+	sqlDB.SetMaxOpenConns(100)
+	//设置了连接可复用的最大时间
+	sqlDB.SetConnMaxLifetime(time.Minute * 2)
 }

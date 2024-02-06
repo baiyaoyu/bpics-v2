@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>一个无聊的个人网站</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    .language-go {
+        color: #333;
+        font-family: Monaco, monospace;
+        font-size: 14px;
+    }
+    .keyword {
+        color: #007700;
+        font-weight: bold;
+    }
+    pre {
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 16px;
+    }
+    .title {
+        background-color: #f7fff7;
+        margin:30px;
+        height: 200px;
+    }
+
+    #logo {
+        display: inline-block;
+
+        padding:8px;
+        width:40%;
+    }
+
+    #logo img{
+        width: 100px;
+        height: 100px;
+        padding:8px;
+        border:2px solid orange;
+        margin: 12px;
+     }
+
+    #links{
+        width:30%;
+        padding:8px;
+        float: right;
+     }
+
+    #links a{
+        border:2px dashed orange;
+        margin: 12px;
+    }
+
+    #nav-bar {
+        margin: 10px 0px 0px 20px;
+        height:60px;
+        background-color: skyblue;
+    }
+
+    #nav-bar .item{
+        margin: 0px 20px 0 20px;
+        border: 1px solid black;
+        padding: 19px;
+        height: 20px;
+        width: 60px;
+        display: inline-block;
+    }
+    #md-nav {
+        height:80px;
+        width: 80%;
+        margin: auto;
+    }
+    table {
+        margin-left: 200px;
+    }
+    #content-view {
+        width: 100%;
+    }
+    #left-bar {
+        width: 20%;
+        border: 1px solid black;
+        float: left;
+        padding: 5px;
+
+    }
+    #content {
+        display: inline-block;
+        background-color: aliceblue;
+        width: 60%;
+        border: 1px solid black;
+        padding: 19px;
+    }
+    td {
+        width: 250px;
+        height: 70px;
+        background: skyblue;
+        border-radius: 15%;
+        border: #ccc;
+        font-size: large;
+        text-align: center;
+    }
+    #logo p {
+        margin: 0px 10px 10px 10px;
+        font-family: "Microsoft YaHei Light", cursive, serif, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #logo p:hover {
+        background-color: #f0f0f0;
+        border-color: #555;
+    }
+  </style>
+</head>
+<body>
+    <div class="title">
+        <marquee>欢迎来到{{.who}}的WebSite</marquee>
+
+        <div id="logo">
+            <img src="{{.img}}"/>
+            <p>{{.who}}的博客小站</p>
+        </div>
+        <div id="links"> 
+            <a href="http://www.hiddencat.fun:8000/fs">友情链接1</a>
+            <a>友情链接2</a>
+            <a>友情链接3</a>
+        </div>
+        <div id="md-nav">
+            <table>
+                <tr>
+                    <td>技术博客</td>
+                    <td>个人日记</td>
+                    <td>生活感悟</td>
+                    <td>读书笔记</td>
+                </tr>
+            </table>
+        </div>
+        <div id="content-view">
+            <div id="left-bar">
+                {{range $k,$v := .blogs}}<li><p onclick="changeContent('{{$v.Id}}')">{{$v.Title}}:{{$v.Date}}</p></li>{{end}}
+            </div>
+            <div id="content"></div>
+        </div>
+  <script>
+    document.getElementById('content').innerHTML =
+      marked.parse('{{.content}}');
+    function changeContent(id) {
+        fetch("/blog/"+id, { method: 'POST',body:null, headers: {
+            "Content-type": "application/json; charset=UTF-8"
+         }})
+        .then(response => {
+            return response.json()
+        })
+        .then(json => {
+            document.getElementById('content').innerHTML = marked.parse(json.Content);
+        })
+        .catch(err => {
+            console.log(err)
+        });
+        
+    }
+  </script>
+</body>
+</html>

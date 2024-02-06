@@ -13,44 +13,33 @@ type Avator struct {
 	Create_time time.Time
 }
 
-func SaveToDb(avator Avator) {
-	tx, _ := db.DbPool.Begin()
-	defer tx.Commit()
-	avator.Create_time = time.Now()
-	tx.Exec("insert into biz_title_pic(id,path,who,create_time) values(?,?,?,?)", avator.Id, avator.Path, avator.Who, avator.Create_time)
+const TbName string = "biz_title_pic"
+
+// TbName Avator's table name
+func (avator *Avator) TableName() string {
+	return TbName
 }
 
-func FetchOneByDate() Avator {
+func (a *Avator) SaveToDb(avator Avator) {
+	db.DbPool.Model(&Avator{}).Select("id", "path", "who", "create_time").Create(avator)
+}
+
+func (a *Avator) FetchOneByDate() Avator {
 	days := time.Now().Day()
-	var count int
-	tx, _ := db.DbPool.Begin()
-	defer tx.Commit()
-	rows, _ := tx.Query("select count(*) from biz_title_pic")
-	defer rows.Close()
-	rows.Next()
-	rows.Scan(&count)
-	rows.Close()
-	id := days % count
-	return GetOneById(id)
+	var count int64
+	db.DbPool.Model(&Avator{}).Count(&count)
+	id := days % int(count)
+	return a.GetOneById(id)
 }
 
-func GetOneById(id int) Avator {
+func (a *Avator) GetOneById(id int) Avator {
 	var res Avator
-	rows, _ := db.DbPool.Query("select * from biz_title_pic where id = ?", id)
-	defer rows.Close()
-	rows.Next()
-	rows.Scan(&res.Id, &res.Path, &res.Who, &res.Create_time)
+	db.DbPool.Select("id", "path", "who", "create_time").Where("id=?", id).Find(&res)
 	return res
 }
 
-func ListAll() []Avator {
+func (a *Avator) ListAll() []Avator {
 	avators := make([]Avator, 0)
-	rows, _ := db.DbPool.Query("select * from biz_title_pic")
-	defer rows.Close()
-	for rows.Next() {
-		var item Avator
-		rows.Scan(&item.Id, &item.Path, &item.Who, &item.Create_time)
-		avators = append(avators, item)
-	}
+	db.DbPool.Select("id", "path", "who", "create_time").Find(&avators)
 	return avators
 }

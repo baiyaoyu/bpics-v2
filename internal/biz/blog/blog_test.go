@@ -18,15 +18,18 @@ func TestSaveBlog(t *testing.T) {
 		ModifyDate: time.Now(),
 		Deleted:    false,
 	}
-	SaveBlog(blog)
+	blog.SaveBlog(blog)
 }
 
 func TestFetchById(t *testing.T) {
-	blog := GetBlogById(10001)
+	var blog BlogVo
+	var b Blog
+	blog = b.GetBlogById(10001)
 	fmt.Println(blog)
 }
 
 func TestListBlog(t *testing.T) {
-	blogs := ListBlog()
+	var b Blog
+	blogs := b.ListBlog()
 	fmt.Println(blogs)
 }
