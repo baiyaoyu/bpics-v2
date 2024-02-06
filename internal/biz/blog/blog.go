@@ -26,6 +26,7 @@ type BlogVo struct {
 	Type       string
 	Tag        string
 	Content    string
+	CreateDate string
 	Date       string
 	ModifyDate string
 }
@@ -41,15 +42,23 @@ func (b *Blog) SaveBlog(blog Blog) {
 	db.DbPool.Model(&Blog{}).Select("id", "title", "path", "author", "type", "tag", "create_date", "modify_date", "deleted").Create(blog)
 }
 
-func (b *Blog) ListBlog() []Blog {
+func (b *Blog) ListBlog() []BlogVo {
 	list := make([]Blog, 0)
+	vos := make([]BlogVo, 0)
 	db.DbPool.Select("id", "title", "path", "author", "type", "tag", "create_date", "modify_date", "deleted").Where("deleted = ?", false).Find(&list)
-	return list
+	for _, b := range list {
+		vos = append(vos, b.convertToVo())
+	}
+	return vos
 }
 
 func (b *Blog) GetBlogById(id int) BlogVo {
 	var blog Blog
 	db.DbPool.Model(&Blog{}).Where("id = ?", id).Select("id", "title", "path", "author", "type", "tag", "create_date", "modify_date", "deleted").Find(&blog)
+	return blog.convertToVo()
+}
+
+func (blog *Blog) convertToVo() BlogVo {
 	vo := BlogVo{
 		Id:         blog.Id,
 		Path:       blog.Path,
@@ -57,7 +66,8 @@ func (b *Blog) GetBlogById(id int) BlogVo {
 		Tag:        blog.Tag,
 		Author:     blog.Author,
 		Type:       blog.Type,
-		Date:       blog.CreateDate.Format("2006-01-03 15:00:01"),
-		ModifyDate: blog.ModifyDate.Format("2006-01-03 15:00:01")}
+		CreateDate: blog.CreateDate.Format("2006.01.02 15:04:05"),
+		Date:       blog.CreateDate.Format("2006.01.02"),
+		ModifyDate: blog.ModifyDate.Format("2006.01.02 15:04:05")}
 	return vo
 }

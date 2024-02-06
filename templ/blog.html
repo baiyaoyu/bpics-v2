@@ -110,7 +110,25 @@
         background-color: #f0f0f0;
         border-color: #555;
     }
+    .d {
+        width: 100px;
+        text-align: right;
+    }
+    .tts {
+        background: lightgoldenrodyellow;
+    }
+    .bold {
+       display: inline-block;
+        font-family: Microsoft YaHei;
+        width: 200px;
+        height: 35px;
+    }
+    .day {
+       display: inline;
+       text-align: right;
+    }
   </style>
+
 </head>
 <body>
     <div class="title">
@@ -137,7 +155,7 @@
         </div>
         <div id="content-view">
             <div id="left-bar">
-                {{range $k,$v := .blogs}}<li><p onclick="changeContent('{{$v.Id}}')">{{$v.Title}}:{{$v.CreateDate}}</p></li>{{end}}
+                {{range $k,$v := .blogs}} <div class="tts" onclick="changeContent('{{$v.Id}}')"> <div class="bold"><b>{{$v.Title}}</b></div> <div class="day">{{$v.Date}}</div> </div>{{end}}
             </div>
             <div id="content"></div>
         </div>
