@@ -49,7 +49,7 @@ func (b *Blog) ListBlog() []Blog {
 
 func (b *Blog) GetBlogById(id int) BlogVo {
 	var blog Blog
-	db.DbPool.Model(&Blog{}).Select("id", "title", "path", "author", "type", "tag", "create_date", "modify_date", "deleted").Find(&blog)
+	db.DbPool.Model(&Blog{}).Where("id = ?", id).Select("id", "title", "path", "author", "type", "tag", "create_date", "modify_date", "deleted").Find(&blog)
 	vo := BlogVo{
 		Id:         blog.Id,
 		Path:       blog.Path,
