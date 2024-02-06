@@ -12,6 +12,6 @@ data:
   path: /opt/src/go/baipics-v2/data
 
 md:
-  path: 
+  path: /opt/src/go/baipics-v2/data/markdown
 
 templ: ./templ/*

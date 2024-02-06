@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/baiyaoyu/bpics-v2/internal/biz/avator"
@@ -14,6 +15,7 @@ import (
 type FsHandler struct {
 	fsHandler http.Handler
 	rootPath  http.Dir
+	basepath  string
 }
 
 type Item struct {
@@ -29,18 +31,19 @@ type FileReq struct {
 	Op   string `json:"op"` // list download view upload
 }
 
-func NewFsHandler() FsHandler {
+func NewFsHandler(basepath string) FsHandler {
 	path := http.Dir(config.DataPath)
 	return FsHandler{
 		rootPath:  path,
 		fsHandler: http.Handler(http.StripPrefix("/", http.FileServer(path))),
+		basepath:  basepath,
 	}
 }
 
 // 模板处理使用
 func (handler *FsHandler) FileSystemHandler() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		path := ctx.Request.RequestURI
+		path := strings.Replace(ctx.Request.RequestURI, handler.basepath, "", 1)
 		// 转义后可支持中文路径的文件
 		filePath, _ := url.QueryUnescape(path)
 		// fmt.Println(path)
@@ -55,7 +58,7 @@ func (handler *FsHandler) FileSystemHandler() func(ctx *gin.Context) {
 				"path":     filePath,
 			})
 		} else {
-			handler.fsHandler.ServeHTTP(ctx.Writer, ctx.Request)
+			handler.innerServe(ctx.Writer, ctx.Request, filePath)
 		}
 	}
 }
@@ -115,4 +118,8 @@ func (handler *FsHandler) listDir(path string) []Item {
 func (handler *FsHandler) innerServe(w http.ResponseWriter, r *http.Request, name string) {
 	file, _ := handler.rootPath.Open(name)
 	http.ServeContent(w, r, name, time.Now(), file)
+}
+
+func (handler *FsHandler) GetRootPath() *http.Dir {
+	return &handler.rootPath
 }

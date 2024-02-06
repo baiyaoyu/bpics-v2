@@ -12,7 +12,10 @@ func InitEngine(TemplPath string) {
 	gin.DefaultWriter = logrus.StandardLogger().Out
 	r := gin.Default()
 	r.LoadHTMLGlob(TemplPath)
-	fsHandler := handler.NewFsHandler()
-	r.GET("/*name", fsHandler.FileSystemHandler())
+	fsHandler := handler.NewFsHandler("/fs")
+	blogHandler := handler.NewBlogHandler()
+	r.GET("/fs/*name", fsHandler.FileSystemHandler())
+	r.GET("/blog", blogHandler.BlogViewHandler())
+	r.POST("/blog/:id", blogHandler.BlogJsonHandler())
 	Default = r
 }

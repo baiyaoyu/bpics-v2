@@ -14,6 +14,7 @@ var DataPath string
 var Port int
 var Ip string
 var TemplPath string
+var MdPath string
 
 func InitConfig(Path string) {
 	viper.SetConfigName("configs")
@@ -31,6 +32,7 @@ func InitConfig(Path string) {
 	Port = viper.GetInt("server.port")
 	Ip = viper.GetString("server.ip")
 	TemplPath = viper.GetString("templ")
+	MdPath = viper.GetString("md.path")
 }
 
 func InitOther() {

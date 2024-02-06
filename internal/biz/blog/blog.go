@@ -26,7 +26,7 @@ type BlogVo struct {
 	Type       string
 	Tag        string
 	Content    string
-	CreateDate string
+	Date       string
 	ModifyDate string
 }
 
@@ -57,7 +57,7 @@ func (b *Blog) GetBlogById(id int) BlogVo {
 		Tag:        blog.Tag,
 		Author:     blog.Author,
 		Type:       blog.Type,
-		CreateDate: blog.CreateDate.Format("2006-01-03 15:00:01"),
+		Date:       blog.CreateDate.Format("2006-01-03 15:00:01"),
 		ModifyDate: blog.ModifyDate.Format("2006-01-03 15:00:01")}
 	return vo
 }

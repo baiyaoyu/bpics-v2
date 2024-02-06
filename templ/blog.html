@@ -137,7 +137,7 @@
         </div>
         <div id="content-view">
             <div id="left-bar">
-                {{range $k,$v := .blogs}}<li><p onclick="changeContent('{{$v.Id}}')">{{$v.Title}}:{{$v.Date}}</p></li>{{end}}
+                {{range $k,$v := .blogs}}<li><p onclick="changeContent('{{$v.Id}}')">{{$v.Title}}:{{$v.CreateDate}}</p></li>{{end}}
             </div>
             <div id="content"></div>
         </div>
