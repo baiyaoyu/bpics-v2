@@ -46,7 +46,8 @@ func (handler *FsHandler) FileSystemHandler() func(ctx *gin.Context) {
 		// fmt.Println(path)
 		if handler.judgePath(filePath) {
 			files := handler.listDir(filePath)
-			avatorPic := avator.FetchOneByDate()
+			var avatorPic avator.Avator
+			avatorPic = avatorPic.FetchOneByDate()
 			ctx.HTML(http.StatusOK, "index.html", gin.H{
 				"who":      avatorPic.Who,
 				"img":      avatorPic.Path,

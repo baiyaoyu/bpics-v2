@@ -12,11 +12,13 @@ type BlogHander struct {
 // 模板渲染的
 func (blogHandler *BlogHander) BlogViewHandler() func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
-		avatorPic := avator.FetchOneByDate()
+		var avator avator.Avator
+		var blog blog.Blog
+		avator = avator.FetchOneByDate()
 		blogs := blog.ListBlog()
 		ctx.HTML(200, "blog.html", gin.H{
-			"who":   avatorPic.Who,
-			"img":   avatorPic.Path,
+			"who":   avator.Who,
+			"img":   avator.Path,
 			"blogs": blogs,
 		})
 	}
